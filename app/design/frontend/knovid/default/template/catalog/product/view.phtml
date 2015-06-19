@@ -56,11 +56,12 @@ if (null == $_ChapSelect) {
 <div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
 <div class="product-view">
     <div class="product-essential">
-        <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <form action="javascript:thiscartpopup.submitAction('<?php echo $_product->getId() ?>','<?php echo $this->getSubmitUrl($_product) ?>')" method="post" id="product_addtocart_form_<?php echo $_product->getId(); ?>">
             <?php echo $this->getBlockHtml('formkey') ?>
             <div class="no-display">
                 <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
                 <input type="hidden" name="related_product" id="related-products-field" value="" />
+                <input type="text" pattern="\d*" name="qty" id="qty" maxlength="12" value="1" />
             </div>
 
             <div class="product-shop">
@@ -73,9 +74,11 @@ if (null == $_ChapSelect) {
                     <br>
                 </div>
                 <div class="price-info">
-                    <?php echo $this->getPriceHtml($_product); ?>
-                    <?php echo $this->getChildHtml('bundle_prices') ?>
-                    <?php echo $this->getTierPriceHtml() ?>
+                    <button title='Subscbribe' class=button>
+                        <span><span>
+                             ₹<?php echo round($_product->getPrice()) ?> Subscribe 
+                        </span></span>
+                    </button>
                 </div>
             </div>
 
@@ -83,30 +86,43 @@ if (null == $_ChapSelect) {
         
     </div>
 
-    <section name="Learning">
-        <div id="divVideoContent">
-            <div style="width: 100%">
-                <iframe height=498 width=100% src="http://player.youku.com/embed/XMTI1NDc5NDcxNg==" frameborder=0 allowfullscreen></iframe>
-            </div>
-            <div class="product-videobottom">
-                <span>
-                    <span>
-                        Learning : <?php echo $_ChapSelect->getVideoName_1(); ?><br>
-                    </span>
-                    <span style="font-size:12px;">
-                        Chapter : <?php echo $_helper->productAttribute($_ChapSelect, $_ChapSelect->getName(), 'name') ?>
-                    </span>
-                </span>
-            </div>
-        </div>
-    </section>
-
     <?php
         $allRelatedProductIds = $_product->getRelatedProductIds();
         foreach ($allRelatedProductIds as $id) {
             $related_ids[] = $id;    
         }
+        //$rel_product = Mage::getModel('catalog/product')->load($related_ids[0]);
     ?>
+
+    <section name="Learning">
+        <div id="divVideoContent">
+            <div class='video_locked'>
+                <div id='video_sub_controls'>
+                    &nbsp;
+                </div>
+            </div>
+            <div class="product-videobottom">
+                <span>
+                    <span>
+                        Loading...
+                    </span>
+                    <span style="font-size:12px;">
+                        &nbsp;
+                    </span>
+                </span>
+            </div>
+        </div>
+        <script type="text/javascript">
+            loadVideo("<?php echo $related_ids[0]; ?>",
+                    "1",
+                    "<?php echo Mage::getBaseUrl(); ?>");
+        </script>
+        <!-- <?php 
+            $rel_product = Mage::getModel('catalog/product')->load($id);
+        ?>-->
+    </section>
+
+
 
     <div class="product-collateral toggle-content tabs">
 
@@ -117,27 +133,56 @@ if (null == $_ChapSelect) {
             <div class="" style="padding: 7px 10px 7px 24px;">
             <div class="content-area">
                 <?php
+
+                $book_subscribed = false;
+
+                // Check for the book subscription
+                if ($course_mod->checkSubscription($_product)) {
+                    $book_subscribed = true;
+                }                            
                 
                 if ($_product->getParentId() == "") { //Book
                     foreach ($allRelatedProductIds as $id) {
                         $rel_product = Mage::getModel('catalog/product')->load($id);
-                        $cnt++;
+                        //$cnt++;
                         ?>
                         <div class="chapter-tab-content">
+                        <form action="javascript:thiscartpopup.submitAction('<?php echo $id ?>','<?php echo $this->getSubmitUrl($rel_product) ?>')" method="post" id="product_addtocart_form_<?php echo $id; ?>">
+                         <div class="no-display">
+                            <input type="hidden" name="product" value="<?php echo $rel_product->getId() ?>" />
+                            <input type="hidden" name="related_product" id="related-products-field" value="" />
+                            <input type="text" pattern="\d*" name="qty" id="qty" maxlength="12" value="1" />
+                        </div>
+                          
+                        <!-- Check whether chapter is subscribed -->
+                        <?php 
+                                $chap_subscribed = false;
+
+                                if ($book_subscribed) {
+                                    $chap_subscribed = true;
+                                }
+                                else if ($course_mod->checkSubscription($rel_product)) {
+                                    $chap_subscribed = true;
+                                }                             
+                        ?>
                         <ul>
                             <li style="height:23px;">
                             <div class="chapter-name">
                                 <?php echo $rel_product->getName() ?>
                             </div>
+
+                            <?php 
+                            if (!$chap_subscribed)
+                            {
+                            ?>
                             <div class="chapter-subcription">
-                                <a href="javascript:;;"> 
+                                <a href="javascript:;;" onclick="product_addtocart_form_<?php echo $id;?>.submit()"> 
                                     ₹<? if ($rel_product->getPrice() == 0) { echo "Free"; } else { echo round($rel_product->getPrice()); }?>
                                     <img style="display:inline;" src="<?php echo $this->getSkinUrl('images/knovid/cart_add.png') ?>"/>
                                 </a>
                             </div>
+                            <?php } ?>
                             </li>
-                            
-
                             <?php
                             for ($i = 1; $i <= 10; $i++) {
                                 $fn_name = "getVideoName_" . $i;
@@ -145,7 +190,7 @@ if (null == $_ChapSelect) {
                                 $vid_free = "getVideoFree_" . $i;
                                 ?>
                                 <?php if ($rel_product->$fn_name()) { ?>
-                                    <li <?php if ($course_mod->checkSubscription($rel_product, $i)) { ?> class="chapter-unlocked" <?php } else { ?> class="chapter-locked" <?php } ?>  >
+                                    <li <?php if ($chap_subscribed || $rel_product->$vid_free() ) { ?> class="chapter-unlocked" <?php } else { ?> class="chapter-locked" <?php } ?>  >
                                         <a href="javascript:loadVideo('<?php echo $rel_product->getId(); ?>',
                                                                       '<?php echo $i; ?>',
                                                                       '<?php echo Mage::getBaseUrl(); ?>');">
@@ -155,6 +200,58 @@ if (null == $_ChapSelect) {
                                 <?php } ?>
                             <?php } ?>
                         </ul>
+                        </form>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                                var productAddToCartForm = new VarienForm('product_addtocart_form');
+                                productAddToCartForm.submit = function(button, url) {
+                                    if (this.validator.validate()) {
+                                        var form = this.form;
+                                        var oldUrl = form.action;
+
+                                        if (url) {
+                                           form.action = url;
+                                        }
+                                        var e = null;
+                                        try {
+                                            this.form.submit();
+                                        } catch (e) {
+                                        }
+                                        this.form.action = oldUrl;
+                                        if (e) {
+                                            throw e;
+                                        }
+
+                                        if (button && button != 'undefined') {
+                                            button.disabled = true;
+                                        }
+                                    }
+                                }.bind(productAddToCartForm);
+
+                                productAddToCartForm.submitLight = function(button, url){
+                                    if(this.validator) {
+                                        var nv = Validation.methods;
+                                        delete Validation.methods['required-entry'];
+                                        delete Validation.methods['validate-one-required'];
+                                        delete Validation.methods['validate-one-required-by-name'];
+                                        // Remove custom datetime validators
+                                        for (var methodName in Validation.methods) {
+                                            if (methodName.match(/^validate-datetime-.*/i)) {
+                                                delete Validation.methods[methodName];
+                                            }
+                                        }
+
+                                        if (this.validator.validate()) {
+                                            if (url) {
+                                                this.form.action = url;
+                                            }
+                                            this.form.submit();
+                                        }
+                                        Object.extend(Validation.methods, nv);
+                                    }
+                                }.bind(productAddToCartForm);
+                            //]]>
+                            </script>
                     </div>
                         <?php
                     } //Foreach

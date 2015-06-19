@@ -10,7 +10,7 @@ class Nuvodev_Courses_Helper_Video extends Mage_Core_Helper_Abstract {
                 echo "    <div class='video_locked'>";
                 echo "	  <div id='video_sub_controls'>";
                 echo " 	   Oops!!! Not Subscribed yet? Click below button to start learning.<br><br>";
-                echo "  	<button title='Subscbribe' class=button><span><span>Subscribe (₹". round($prod->getPrice()) .")</span></span>";
+                echo "  	<button title='Subscbribe' class=button onclick='javascript:product_addtocart_form_"; echo $prod->getId(); echo ".submit();'><span><span>Subscribe (₹". round($prod->getPrice()) .")</span></span>";
                 echo "    </div></div>";
                 echo "    <div class='product-videobottom'>";
                 echo "        <span>";

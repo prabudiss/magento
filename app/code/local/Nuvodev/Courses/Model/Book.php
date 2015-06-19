@@ -2,12 +2,13 @@
 
 class Nuvodev_Courses_Model_Book extends Mage_Core_Model_Abstract
 {
+	public function checkSubscription($prod) {
 
+		//$vid_free = "getVideoFree_" . $index;
+		$subscribed = false;
+		$logged_in = false;
 
-
-	public function checkSubscription($prod, $index) {
-
-		$vid_free = "getVideoFree_" . $index;
+		$customer_id = 0;
 
 		//$prod = Mage::getModel('catalog/product')->load($pid);
 		//Check whether the user logged in.
@@ -30,27 +31,33 @@ class Nuvodev_Courses_Model_Book extends Mage_Core_Model_Abstract
 		        {
 		            $prod_id=$item->getProductId();
 
-		            if ($prod->getProductId() != $prod_id) {
-		            	continue;
-		            }
+		            if ($prod->getId() == $prod_id) {
 
-		            $product = Mage::getModel('catalog/product')->load($prod_id);
-		            $validity = $product->getValidity();
-		            if(strtotime($item->getCreatedAt() + $validity ."Days") > (strtotime("Now")))
-		            {
-		                //$subscribed++;
-		                $subscribed = true;
-		                break;
-		            }
+						$product = Mage::getModel('catalog/product')->load($prod_id);
+		            	$validity = $product->getValidity();
+		            	if(strtotime($item->getCreatedAt() + $validity ."Days") >= (strtotime("Now")))
+			            {
+			                $subscribed = true;
+			                break;
+			            }
 
+			        }
+			        else if ($prod->getParentId() == $prod_id) {
+			        	$product = Mage::getModel('catalog/product')->load($prod_id);
+		            	$validity = $product->getValidity();
+		            	if(strtotime($item->getCreatedAt() + $validity ."Days") >= (strtotime("Now")))
+			            {
+			                $subscribed = true;
+			                break;
+			            }
+			        }
 		        }
 		    }
 		}
 
-		if ($logged_in && $subscribed || $prod->$vid_free()) { 
+		if ($logged_in && $subscribed) { 
 			return true;
 		}
-
 		return false;
 		
 	}
@@ -58,10 +65,15 @@ class Nuvodev_Courses_Model_Book extends Mage_Core_Model_Abstract
 	public function getVideoTag($pid, $index)
 	{
 		$_helper = Mage::helper('courses/video');
+		$vid_free = "getVideoFree_" . $index;
 		
 		$prod = Mage::getModel('catalog/product')->load($pid);
 
-		if ($this->checkSubscription($prod, $index)) {
+		if ($prod->$vid_free())
+		{
+			$_helper->getVideo($prod, $index);
+		}
+		else if ($this->checkSubscription($prod)) {
 			$_helper->getVideo($prod, $index);
 		}
 		else {
