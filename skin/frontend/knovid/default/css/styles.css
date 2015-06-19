@@ -5494,8 +5494,8 @@ p.product-name a:hover {
 .chapter-name
 {
   padding: 5px;
-  padding-left: 0px;
-  /*background: url("../images/knovid/bluedro.png") no-repeat 0 0px;*/
+  padding-left: 10px;
+  background: url("../images/knovid/bluedro.png") no-repeat 0 0px;
   background-position: left center;
   vertical-align: middle;
   float:left;
@@ -5506,7 +5506,7 @@ p.product-name a:hover {
 
 .chapter-subcription {
   padding: 5px;
-  padding-left: 10px;
+  padding-left: 0px;
   vertical-align: middle;
   float:right;
   width:30%;
