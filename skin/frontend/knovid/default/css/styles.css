@@ -3411,9 +3411,32 @@ a.skip-link {
   top: 0px;
   right: 0px;
 }
-@media only screen and (max-width: 770px) {
+@media only screen and (max-width: 700px) {
   .account-cart-wrapper {
     position: static;
+    display:block;
+  }
+}
+
+@media only screen and (min-width: 771px) {
+  .account-cart-wrapper {
+    position: static;
+    display:none;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+.account-cart-new {
+
+  display: none;
+}
+}
+@media only screen and (min-width: 771px) {
+  .account-cart-new {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display:block;
   }
 }
 
@@ -3454,6 +3477,8 @@ a.skip-link {
 @media only screen and (max-width: 770px) {
   #header-nav {
     padding: 5px 0;
+    background-color: #3399cc;
+    color:white;  
   }
 }
 @media only screen and (min-width: 771px) {
@@ -3461,8 +3486,12 @@ a.skip-link {
     display: block;
     /* Force visibility */
     border-bottom: 1px solid #ededed;
+    background-color: #3399cc;
+    color:white;  
   }
+
 }
+
 /* ============================================ *
  * Nav Primary
  * ============================================ */
@@ -3497,6 +3526,10 @@ a.skip-link {
 
 .nav-primary li.level0 > a {
   text-transform: uppercase;
+  color:white;
+}
+.nav-primary li.level0 > a:hover {
+  color:black;
 }
 
 /* ============================================ *
@@ -3811,6 +3844,7 @@ a.skip-link {
     background: white;
   }
 }
+
 /* -------------------------------------------- *
  * Skip Cart Notifier
  */

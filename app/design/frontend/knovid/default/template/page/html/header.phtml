@@ -28,7 +28,7 @@
  */
 ?>
 
-<div class="header-language-background">
+<!--<div class="header-language-background">
     <div class="header-language-container">
         <div class="store-language-container">
             <?php echo $this->getChildHtml('store_language') ?>
@@ -38,7 +38,7 @@
 
         <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?> <?php echo $this->getAdditionalHtml() ?></p>
     </div>
-</div>
+</div>-->
 
 <header id="header" class="page-header">
     <div class="page-header-container">
@@ -63,8 +63,13 @@
                 <span class="icon"></span>
                 <span class="label"><?php echo $this->__('Search'); ?></span>
             </a>
+            <div class="account-cart-new">
+                <div data-target-element="#header-account1" class="skip-link skip-account">
+                    <span class="label"> <?php echo $this->getChildHtml('welcome') ?> </span>
+                </div>
+            </div>
 
-            <div class="account-cart-wrapper">
+            <div class="account-cart-wrapper">    
                 <a href="<?php echo $this->helper('customer')->getAccountUrl(); ?>" data-target-element="#header-account" class="skip-link skip-account">
                     <span class="icon"></span>
                     <span class="label"><?php echo $this->__('Account'); ?></span>
@@ -75,7 +80,9 @@
                 <div class="header-minicart">
                     <?php echo $this->getChildHtml('minicart_head'); ?>
                 </div>
-            </div>
+         </div>
+
+
 
 
         </div>
