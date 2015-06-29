@@ -258,6 +258,40 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         $this->renderLayout();
     }
 
+    private function _createCustomerAddress($customer) {
+
+        $_custom_address = array (
+          'firstname' => $customer->getFirstname(),
+          'lastname' => $customer->getLastname(),
+          'street' => array (
+              '0' =>  $customer->getYear() . ", " . $customer->getCourse(),
+              '1' => $customer->getCollege(),
+          ),
+          'city' => $customer->getPlace(),
+          'region_id' => '',
+          'region' => '',
+          'postcode' => '0',
+          'country_id' => 'IND', /* Croatia */
+          'telephone' => $customer->getPhone(),
+        );
+        $customAddress = Mage::getModel('customer/address');
+
+        $customAddress->setData($_custom_address)
+                  ->setCustomerId($customer->getId())
+                  ->setIsDefaultBilling('1')
+                  ->setIsDefaultShipping('1')
+                  ->setSaveInAddressBook('1');
+        try {
+          $customAddress->save();
+          Mage::Log("Adding information success!!!");
+        }
+        catch (Exception $ex) {
+          //Zend_Debug::dump($ex->getMessage());
+        Mage::Log("Error in Address " . $ex->getMessage());
+        }
+        return;
+    }
+
     /**
      * Create customer account action
      */
@@ -285,6 +319,10 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 $customer->cleanPasswordsValidationData();
                 $customer->save();
                 $this->_dispatchRegisterSuccess($customer);
+
+                //Added by Prabu K V
+                //Adding code in core module is not a good idea, after 1st release this must be written by overwritting.
+                $this->_createCustomerAddress($customer);
                 $this->_successProcessRegistration($customer);
                 return;
             } else {

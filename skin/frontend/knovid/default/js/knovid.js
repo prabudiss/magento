@@ -1,4 +1,7 @@
 function loadVideo(pid, index, base_url){
+
+		//document.getElementById('divVideoContent').innerHTML = "<img src='../images/ajax-loading.gif' />";
+
 		var prod_id = jQuery(this).attr("prod_id");
 		var obj = jQuery(this);
 		var data = "prod_id=" + pid;
@@ -12,6 +15,7 @@ function loadVideo(pid, index, base_url){
 			  statusCode: {
 			  		200: function(response) {
 			  			document.getElementById('divVideoContent').innerHTML = response;
+			  			window.location.href = "#Learning";
 			  		},
 			  		404: function() {
 			  		alert("Something went wrong!!!");

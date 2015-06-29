@@ -56,6 +56,21 @@ var cartpopup = Class.create({
     },
     submitAction: function(id, paraSubmiturl) {
         var formdata = $("product_addtocart_form_" + id).serialize(true);
+        var pricetag = "price_" + id;
+        if (eval(pricetag) != undefined) {
+            var price = Math.round(eval(pricetag).value);
+
+            if (0 == price) {
+
+                if (confirm('Do your want to subscribe?'))
+                {
+                    window.location.href = $("prod_baseurl").value + "courses/index/Purchase/id/" + id;
+                }
+                //alert(Math.round(eval(pricetag).value));
+                //alert($("product_addtocart_form_" + id).eval(pricetag).value);
+                return;
+            }
+        }
         var id = false;
         this.addToCart(id, formdata, paraSubmiturl)
     },

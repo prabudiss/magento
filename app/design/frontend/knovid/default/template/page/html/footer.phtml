@@ -26,7 +26,21 @@
 ?>
 <div class="footer-container">
     <div class="footer">
-        <?php echo $this->getChildHtml() ?>
-        <address class="copyright"><?php echo $this->getCopyright() ?></address>
+    	<div class="copyright">
+    		<?php echo $this->getCopyright() ?>
+    	</div>
+    	<div class="social">
+    		<a href="http://www.facebook.com" class="social-fb">acebook</a>
+			
+    		<a href="http://www.twitter.com" class="social-tw">witter</a>
+    	</div>
+    	<div class="contactus" style="padding-right:15px;">
+    		<a href="<?php echo Mage::getBaseUrl(); ?>contacts">Contact Us</a>
+
+    	</div>
+
+        <!-- <?php echo $this->getChildHtml() ?> -->
+        <!-- <address class="copyright"><?php echo $this->getCopyright() ?></address> -->
     </div>
+
 </div>

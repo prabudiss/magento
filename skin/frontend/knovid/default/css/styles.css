@@ -1323,6 +1323,10 @@ a.button:hover {
   clear: both;
 }
 
+.main {
+  min-height: 400px;
+}
+
 .col-left,
 .col-right,
 .col-main {
@@ -4008,11 +4012,74 @@ a.skip-link {
   clear: both;
   width: 100%;
   border-top: 1px solid #cccccc;
-  padding-top: 30px;
+  padding: 30px;
+  background-color: #2e2e2e;
   /* -------------------------------------------- *
    * Social icons
    */
 }
+
+@media only screen and (max-width: 300px) {
+    .footer .copyright {
+      color:white;
+      width:100%;
+      text-align: center;
+    }
+
+    .footer .social  {
+      float:normal;
+      color:white;
+      width:100%;
+      text-align:center;
+    }
+
+
+    .contactus a {
+      
+      color:white;
+    }
+}
+
+@media only screen and (min-width: 771px) {
+
+.footer .copyright {
+  float:left;
+  color:white;
+}
+
+.footer .social  {
+  float:right;
+  color:white;
+}
+
+.contactus {
+  float:right;
+  padding-top:5px;
+}
+
+.contactus a {
+  
+  color:white;
+}
+}
+.social-fb {
+background-image: url(../images/facebook.png);
+background-repeat: no-repeat;
+float:right;
+padding:5px;
+padding-left:25px;
+color:white;
+}
+.social-tw {
+background-image: url(../images/twitter.png);
+background-repeat: no-repeat;
+float:right;
+padding:5px;
+color:white;
+padding-left:25px;
+
+}
+
 @media only screen and (max-width: 479px) {
   .footer {
     padding-top: 15px;
@@ -4984,7 +5051,7 @@ p.product-name a:hover {
 }
 .product-view .product-shop .product-name .h1,
 .product-view .product-img-box .product-name h1 {
-  color: #636363;
+  color: #3399cc;
   margin-bottom: 10px;
   border: 0;
 }
@@ -5003,7 +5070,7 @@ p.product-name a:hover {
 .product-view .product-shop .product-name .h1 {
   float: left;
   margin-bottom: 5px;
-  font-size: 16px;
+  font-size: 20px;
 }
 .product-view .product-shop .extra-info {
   float: left;
@@ -5411,6 +5478,7 @@ p.product-name a:hover {
     line-height: 1.4;
     text-rendering: optimizeSpeed;
     
+
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
@@ -5423,6 +5491,7 @@ p.product-name a:hover {
     border-style: solid;
     border-color: #cccccc;
     display: block;
+    min-height: 500px;
   } 
 
   .video_locked {
@@ -5512,6 +5581,7 @@ p.product-name a:hover {
     padding: 15px;
     border: 1px solid #cccccc;
     border-top: 0;
+    min-height: 458px;
   }
   .product-collateral > dl > dd.current {
     display: block;
@@ -5523,6 +5593,11 @@ p.product-name a:hover {
 
   
 
+}
+
+#divVideoContent {
+  background-color:black;
+  border-color: #cccccc;
 }
 
 .chapter-name

@@ -48,42 +48,61 @@ if (null == $_ChapSelect) {
     return;
 }
 
+$book_subscribed = false;
+
+// Check for the book subscription
+if ($course_mod->checkSubscription($_product)) {
+    $book_subscribed = true;
+} 
+
 ?>
 
 <script type="text/javascript">
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
 </script>
+<input type=hidden id="prod_baseurl" value="<?php echo Mage::getBaseUrl() ?>" />
 <div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
 <div class="product-view">
     <div class="product-essential">
+
+    <?php if (!$book_subscribed) { ?>
         <form action="javascript:thiscartpopup.submitAction('<?php echo $_product->getId() ?>','<?php echo $this->getSubmitUrl($_product) ?>')" method="post" id="product_addtocart_form_<?php echo $_product->getId(); ?>">
             <?php echo $this->getBlockHtml('formkey') ?>
             <div class="no-display">
                 <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
                 <input type="hidden" name="related_product" id="related-products-field" value="" />
                 <input type="text" pattern="\d*" name="qty" id="qty" maxlength="12" value="1" />
+                <input type="hidden" id="price_<?php echo round($_product->getId()) ?>" name="price_<?php echo round($_product->getId()) ?>" value="<?php echo $_product->getPrice() ?>" />
             </div>
-
+    <?php } ?>
             <div class="product-shop">
                 <div class="product-name">
                     <span class="h1">
                         <?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
                     </span>
                     <br>
-                    Author : Knovid.com 
+                    <!--Author : Knovid.com -->
                     <br>
                 </div>
+    <?php if (!$book_subscribed) { ?>
                 <div class="price-info">
                     <button title='Subscbribe' class=button>
                         <span><span>
-                             ₹<?php echo round($_product->getPrice()) ?> Subscribe 
+                            <?php 
+                                if (round($_product->getPrice()) > 0 ) { 
+                                    echo "Buy [Rs." . round($_product->getPrice()) . "]";
+                                } else {
+                                    echo "Subscribe";
+                                }
+                            ?>    
                         </span></span>
                     </button>
                 </div>
+    <?php } ?>
             </div>
-
+    <?php if (!$book_subscribed) { ?>
         </form>
-        
+    <?php } ?>        
     </div>
 
     <?php
@@ -134,12 +153,7 @@ if (null == $_ChapSelect) {
             <div class="content-area">
                 <?php
 
-                $book_subscribed = false;
-
-                // Check for the book subscription
-                if ($course_mod->checkSubscription($_product)) {
-                    $book_subscribed = true;
-                }                            
+                           
                 
                 if ($_product->getParentId() == "") { //Book
                     foreach ($allRelatedProductIds as $id) {
@@ -149,7 +163,8 @@ if (null == $_ChapSelect) {
                         <div class="chapter-tab-content">
                         <form action="javascript:thiscartpopup.submitAction('<?php echo $id ?>','<?php echo $this->getSubmitUrl($rel_product) ?>')" method="post" id="product_addtocart_form_<?php echo $id; ?>">
                          <div class="no-display">
-                            <input type="hidden" name="product" value="<?php echo $rel_product->getId() ?>" />
+                            <input type="hidden" name="product_<?php echo round($rel_product->getId()) ?>" value="<?php echo $rel_product->getId() ?>" />
+                            <input type="hidden" id="price_<?php echo round($rel_product->getId()) ?>" name="price_<?php echo round($rel_product->getId()) ?>" value="<?php echo $rel_product->getPrice() ?>" />
                             <input type="hidden" name="related_product" id="related-products-field" value="" />
                             <input type="text" pattern="\d*" name="qty" id="qty" maxlength="12" value="1" />
                         </div>
@@ -166,7 +181,7 @@ if (null == $_ChapSelect) {
                                 }                             
                         ?>
                         <ul>
-                            <li style="height:23px;">
+                            <li style="height:30px;">
                             <div class="chapter-name">
                                 <?php echo $rel_product->getName() ?>
                             </div>
@@ -176,10 +191,21 @@ if (null == $_ChapSelect) {
                             {
                             ?>
                             <div class="chapter-subcription">
-                                <a href="javascript:;;" onclick="product_addtocart_form_<?php echo $id;?>.submit()"> 
+                                <!-- <a href="javascript:;;" onclick="product_addtocart_form_<?php echo $id;?>.submit()"> 
                                     ₹<? if ($rel_product->getPrice() == 0) { echo "Free"; } else { echo round($rel_product->getPrice()); }?>
                                     <img style="display:inline;" src="<?php echo $this->getSkinUrl('images/knovid/cart_add.png') ?>"/>
-                                </a>
+                                </a>-->
+                                <button title='Subscbribe' class='button' style="font-size:10px;padding:5px;padding-top:2px;padding-bottom:2px;min-width:70px;color:white;">
+                                    <span><span style="color:white;"> 
+                                        <?php 
+                                            if (round($rel_product->getPrice()) > 0 ) { 
+                                                echo "Buy [Rs." . round($rel_product->getPrice()) . "]";
+                                            } else {
+                                                echo "Subscribe";
+                                            }
+                                        ?>   
+                                    </span></span>
+                                </button>
                             </div>
                             <?php } ?>
                             </li>
@@ -275,7 +301,7 @@ if (null == $_ChapSelect) {
         <?php endif; ?>
     </div>
 
-    <?php echo $this->getChildHtml('upsell_products') ?>
-    <?php echo $this->getChildHtml('product_additional_data') ?>
+    <?php echo $this->getChildHtml('upsell_products') ?> 
+    <?php echo $this->getChildHtml('product_additional_data') ?> 
 
 </div>
